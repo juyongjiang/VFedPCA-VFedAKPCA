@@ -40,8 +40,7 @@ VFedPCA+VFedAKPCA
 - imageio = 2.9.0
 
 ## Prepare Dataset
-To demonstrate the superiority of our method, we utilized FIVE types of real-world datasets coming with distinct nature: 
-
+To demonstrate the superiority of our method, we utilized FIVE types of real-world datasets coming with distinct nature.  
 1) structured datasets from different domains; 
 2) medical image dataset; 
 3) face image dataset; 
@@ -51,33 +50,24 @@ To demonstrate the superiority of our method, we utilized FIVE types of real-wor
 **Step 1: Download Dataset from the [Google Drive URL](https://drive.google.com/drive/folders/1Rv_a02tBygvbO8FY05XxsY_lhXLiHQj6?usp=sharing)**
 
 **Step 2: Specify Dataset Path by Command Argument** 
-e.g.
 
 ```bash
 $ python main.py --data_path="./dataset/xxx"
 ```
 
-
-## Training Models
+## Experiments
+### A. Experiment on Structured Dataset
 ```bash
-python train.py -net tinynet(default)
-                -path ./dataset(default)   
-                [-b 32]   
-                [-warm 1]   
-                [-lr 0.01]  
 ```
+### B. Case Studies
 
-## Test Models
-```bash
-python test.py -net tinynet(default)  
-               -weight ./checkpoint/*.pth  
-               -path ./demo/images   
-               -result ./demo/result   
-               [-b 32]  
-               [-rgb]   
-```
-Tips
-Datasets used here are relatively small, which will not take too much time for running. The actual running time of the code is determined by the number of data samples. If the datasets with a larger number of samples, the running time of VFedPCA and VFedAKPCA algorithm will be relatively long.
 ## Demo Results
 
 ## Citation
+```
+@inproceedings{
+    title = {{Vertical Federated Principal Component Analysis and Its Kernel Extension on Feature-wise Distributed Data}},
+    author = {Yiu-ming Cheung, Fellow, IEEE, Feng Yu, and Jian Lou},
+    year = 2021
+}
+```
