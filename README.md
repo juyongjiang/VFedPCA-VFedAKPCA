@@ -13,19 +13,19 @@ This is the official source code for the Paper: **Vertical Federated Principal C
 ## Master Branch
 ```
 VFedPCA+VFedAKPCA                    
-├── config                    // the configuration of the model
-├── network                   // the structure of the model
-├── utils          
-├── dataload              
-├── Train                     // run
-├── Test                      // run
-├── tools                    
-├── project                   // transform .pth model to .onnx model
-├── release                   // simply use for inference
-└── README                    // the information of how to use our TinySR Model 
-└── demo                 
-    ├── images                // the path for putting some test images 
-    └── results               // the output of model result
+├── case                    // the configuration of the model
+    ├── figs                   // save 
+    ├── main.py          
+    ├── model.py              
+    └── utils.py                 
+├── dataset                      // after download the dataset, put it on this folder
+└── figs   
+    ├── dataload              
+    └── Train                     // run  
+├── README.md               
+├── main.py                   // transform .pth model to .onnx model
+├── model.py                   // simply use for inference
+└── utils.py                    // the information of how to run our Model 
 ```
 
 ## Environments
@@ -37,7 +37,7 @@ VFedPCA+VFedAKPCA
 - scipy = 1.6.2
 - imageio = 2.9.0
 
-## Prepare your own dataset
+## Prepare Dataset
 
 Experiment Description
 
@@ -59,7 +59,7 @@ you need to create a folder named dataset firstly
     └── label               // the path for label images
 ```
 
-**Step 1: Download dataset from the URL: https://data.vision.ee.ethz.ch/cvl/DIV2K/**
+**Step 1: Download dataset from the Google Drive URL: https://data.vision.ee.ethz.ch/cvl/DIV2K/**
 ```bash
 $ wget -c http://data.vision.ee.ethz.ch/cvl/DIV2K/DIV2K_train_LR_bicubic_X2.zip 
 $ wget -c http://data.vision.ee.ethz.ch/cvl/DIV2K/DIV2K_valid_LR_bicubic_X2.zip
