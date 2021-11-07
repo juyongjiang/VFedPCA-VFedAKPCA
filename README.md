@@ -43,25 +43,14 @@ VFedPCA+VFedAKPCA
 To demonstrate the superiority of our method, we utilized FIVE types of real-world datasets coming with distinct nature: 
 
 1) structured datasets from different domains; 
-
 2) medical image dataset; 
-
 3) face image dataset; 
-
 4) gait image dataset; 
-
 5) person re-identification image dataset
 
 **Step 1: Download Dataset from the [Google Drive URL](https://drive.google.com/drive/folders/1Rv_a02tBygvbO8FY05XxsY_lhXLiHQj6?usp=sharing)**
 
-e.g.
-
-```bash
-$ wget -c https://drive.google.com/drive/folders/1Rv_a02tBygvbO8FY05XxsY_lhXLiHQj6?usp=sharing
-```
-
 **Step 2: Specify Dataset Path by Command Argument** 
-
 e.g.
 
 ```bash
@@ -90,3 +79,5 @@ python test.py -net tinynet(default)
 Tips
 Datasets used here are relatively small, which will not take too much time for running. The actual running time of the code is determined by the number of data samples. If the datasets with a larger number of samples, the running time of VFedPCA and VFedAKPCA algorithm will be relatively long.
 ## Demo Results
+
+## Citation
