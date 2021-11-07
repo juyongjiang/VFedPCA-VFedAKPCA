@@ -13,8 +13,8 @@ This is the official source code for the Paper: **Vertical Federated Principal C
 ## Master Branch
 ```
 VFedPCA+VFedAKPCA                    
-├── case                        // Case Studies
-    ├── figs                    // Save experimental results' figures in '.eps' / '.png' format 
+└── case                        // Case Studies
+    └── figs                    // Save experimental results' figures in '.eps' / '.png' format 
         ├── img_name*.eps              
         └── img_name*.png           
     ├── main.py          
@@ -44,8 +44,8 @@ To demonstrate the superiority of our method, we utilized FIVE types of real-wor
 1) structured datasets from different domains; 
 2) medical image dataset; 
 3) face image dataset; 
-4) gait image dataset; 
-5) person re-identification image dataset
+4) gait image dataset;
+5) person re-identification image dataset.
 
 **Step 1: Download Dataset from the [Google Drive URL](https://drive.google.com/drive/folders/1Rv_a02tBygvbO8FY05XxsY_lhXLiHQj6?usp=sharing)**
 
@@ -63,7 +63,7 @@ First, you need to choose the dataset.
 ```bash
 python main.py --data_path './dataset/College.csv' --batch_size 160 
 ```
-Then, you only need to set different `flag`, `p_list`, `iter_list` and `sampler_num` to exmaines the effect of feature size, local iterations, warm-start power iterations, and weight scaling method on structed datasets. The example is as follows:
+Then, you only need to set different `flag`, `p_list`, `iter_list` and `sampler_num` to exmaines the effect of feature size, local iterations, warm-start power iterations, and weight scaling method on structed datasets. The example is as follows.
 ```
 flag ='clients'
 p_list = [3, 5, 10]         # the number of involved clients
@@ -73,7 +73,10 @@ sampler_num = 5
 
 ### B. Case Studies
 ```bash
-python main.py --data_path '../dataset/Image/DeepLesion' --client_num 8 --iterations 100 --re_size 512
+python main.py --data_path '../dataset/Image/DeepLesion' /
+               --client_num 8 / 
+               --iterations 100 / 
+               --re_size 512
 ```
 
 ## Citation
