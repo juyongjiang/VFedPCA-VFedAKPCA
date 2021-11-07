@@ -1,6 +1,8 @@
 # VFedPCA+VFedAKPCA
 This is the official source code for our paper: **Vertical Federated Principal Component Analysis and Its Kernel Extension on Feature-wise Distributed Data** based on [Pytorch](https://pytorch.org/) Framework. 
 
+> Despite enormous research interest and rapid application of federated learning (FL) to various areas, existing studies mostly focus on supervised federated learning under the horizontally partitioned local dataset setting. This paper will study the unsupervised FL under the vertically partitioned dataset setting.
+
 ## The Framework of Sever-Clients Architecture
 ![](/Users/sophia/Desktop/c.png)
 ## Experiment Description
