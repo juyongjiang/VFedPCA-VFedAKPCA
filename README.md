@@ -56,18 +56,31 @@ $ python main.py --data_path="./dataset/xxx"
 ```
 
 ## Experiments
-### A. Experiment on Structured Dataset
-```bash
-```
-### B. Case Studies
+We conduct extensive experiments on structured datasets to exmaines the effect of feature size, local iterations, warm-start power iterations, and weight scaling method on structed datasets. Furthermore, we investigate some case studies with image dataset to demonstrate the effectiveness of VFedPCA and VFedAKPCA.
 
-## Demo Results
+### A. Experiment on Structured Dataset
+First, you need to choose the dataset.
+```bash
+python main.py --data_path './dataset/College.csv' --batch_size 160 
+```
+Then, you only need to set different `flag`, `p_list`, `iter_list` and `sampler_num` to exmaines the effect of feature size, local iterations, warm-start power iterations, and weight scaling method on structed datasets. The example is as follows:
+```
+flag ='clients'
+p_list = [3, 5, 10]         # the number of involved clients
+iter_list = [100, 100, 100] # the number of local power iterations
+sampler_num = 5
+```
+
+### B. Case Studies
+```bash
+python main.py --data_path '../dataset/Image/DeepLesion' --client_num 8 --iterations 100 --re_size 512
+```
 
 ## Citation
 ```
 @inproceedings{
-    title = {{Vertical Federated Principal Component Analysis and Its Kernel Extension on Feature-wise Distributed Data}},
-    author = {Yiu-ming Cheung, Fellow, IEEE, Feng Yu, and Jian Lou},
-    year = 2021
+title = {{Vertical Federated Principal Component Analysis and Its Kernel Extension on Feature-wise Distributed Data}},
+author = {Yiu-ming Cheung, Fellow, IEEE, Feng Yu, and Jian Lou},
+year = 2021
 }
 ```

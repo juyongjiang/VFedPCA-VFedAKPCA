@@ -19,7 +19,7 @@ from sklearn import datasets, preprocessing
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_path', type=str, default='../data/College.csv')
+    parser.add_argument('--data_path', type=str, default='./dataset/College.csv')
     parser.add_argument('--batch_size', type=int, default=160)
     args = parser.parse_args()
 
