@@ -40,7 +40,7 @@ VFedPCA+VFedAKPCA
 - imageio = 2.9.0
 
 ## Prepare Dataset
-To demonstrate the superiority of our model, we utilized FIVE types of real-world datasets coming with distinct nature: 
+To demonstrate the superiority of our method, we utilized FIVE types of real-world datasets coming with distinct nature: 
 
 1) structured datasets from different domains; 
 
@@ -53,14 +53,19 @@ To demonstrate the superiority of our model, we utilized FIVE types of real-worl
 5) person re-identification image dataset
 
 **Step 1: Download Dataset from the [Google Drive URL](https://drive.google.com/drive/folders/1Rv_a02tBygvbO8FY05XxsY_lhXLiHQj6?usp=sharing)**
+
+e.g.
+
 ```bash
 $ wget -c https://drive.google.com/drive/folders/1Rv_a02tBygvbO8FY05XxsY_lhXLiHQj6?usp=sharing
 ```
 
-**Step 2: ** 
+**Step 2: Specify Dataset Path by Command Argument** 
+
+e.g.
+
 ```bash
-$ python crop_img.py --src ./dataset/DIV2K_train  --dst ./dataset/DIV2K_train_crop # as /dataset/train
-$ python crop_img.py --src ./dataset/DIV2K_valid  --dst ./dataset/DIV2K_valid_crop  # as /dataset/test
+$ python main.py --data_path="./dataset/xxx"
 ```
 
 
