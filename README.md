@@ -13,19 +13,21 @@ This is the official source code for the Paper: **Vertical Federated Principal C
 ## Master Branch
 ```
 VFedPCA+VFedAKPCA                    
-├── case                    // the configuration of the model
-    ├── figs                   // save 
+├── case                        // Case Studies
+    ├── figs                    // Save experimental results' figures in '.eps' / '.png' format 
+        ├── img_name*.eps              
+        └── img_name*.png           
     ├── main.py          
     ├── model.py              
     └── utils.py                 
-├── dataset                      // after download the dataset, put it on this folder
-└── figs   
-    ├── dataload              
-    └── Train                     // run  
+├── dataset                     // Put downloaded dataset in this folder
+└── figs                        // Save experimental results' figures in '.eps' / '.png' format
+    ├── img_name*.eps              
+    └── img_name*.png           
 ├── README.md               
-├── main.py                   // transform .pth model to .onnx model
-├── model.py                   // simply use for inference
-└── utils.py                    // the information of how to run our Model 
+├── main.py                     // Experiment on Structured Dataset
+├── model.py                   
+└── utils.py                     
 ```
 
 ## Environments
@@ -38,41 +40,30 @@ VFedPCA+VFedAKPCA
 - imageio = 2.9.0
 
 ## Prepare Dataset
+To demonstrate the superiority of our model, we utilized FIVE types of real-world datasets coming with distinct nature: 
 
-Experiment Description
+1) structured datasets from different domains; 
 
-The main function file of the algorithm is: utils.py, the rest are supporting files. If you need run this code, please import utils first. A brief explanation of files is shown below:
-[]()
+2) medical image dataset; 
 
-Data
-We use real datasets including structured datasets and image datasets. Experiment 1,2,3 use structured datasets and Experiment 4 uses image datasets for testing. You can also use other datasets for testing, just adjust the input size of the dataset.
+3) face image dataset; 
 
-Tips
-Datasets used here are relatively small, which will not take too much time for running. The actual running time of the code is determined by the number of data samples. If the datasets with a larger number of samples, the running time of VFedPCA and VFedAKPCA algorithm will be relatively long.
+4) gait image dataset; 
 
-you need to create a folder named dataset firstly
+5) person re-identification image dataset
 
+**Step 1: Download Dataset from the [Google Drive URL](https://drive.google.com/drive/folders/1Rv_a02tBygvbO8FY05XxsY_lhXLiHQj6?usp=sharing)**
 ```bash
-├── dataset                 
-    ├── train                // the path for train images 
-    ├── test                // the path for test images 
-    └── label               // the path for label images
+$ wget -c https://drive.google.com/drive/folders/1Rv_a02tBygvbO8FY05XxsY_lhXLiHQj6?usp=sharing
 ```
 
-**Step 1: Download dataset from the Google Drive URL: https://data.vision.ee.ethz.ch/cvl/DIV2K/**
-```bash
-$ wget -c http://data.vision.ee.ethz.ch/cvl/DIV2K/DIV2K_train_LR_bicubic_X2.zip 
-$ wget -c http://data.vision.ee.ethz.ch/cvl/DIV2K/DIV2K_valid_LR_bicubic_X2.zip
-```
-
-**Step 2: Crop your each images in datasets to low resolution images, such as 64 x 64** 
+**Step 2: ** 
 ```bash
 $ python crop_img.py --src ./dataset/DIV2K_train  --dst ./dataset/DIV2K_train_crop # as /dataset/train
 $ python crop_img.py --src ./dataset/DIV2K_valid  --dst ./dataset/DIV2K_valid_crop  # as /dataset/test
-
-# Step 3: Using the traditional image processing method Bicubic + Sharpening to get Super Resolution images as label dataset
-# $ python inter_img.py --src ./dataset/DIV2K_train_crop --dst ./dataset/DIV2K_train_label
 ```
+
+
 ## Training Models
 ```bash
 python train.py -net tinynet(default)
@@ -91,5 +82,6 @@ python test.py -net tinynet(default)
                [-b 32]  
                [-rgb]   
 ```
-
+Tips
+Datasets used here are relatively small, which will not take too much time for running. The actual running time of the code is determined by the number of data samples. If the datasets with a larger number of samples, the running time of VFedPCA and VFedAKPCA algorithm will be relatively long.
 ## Demo Results
