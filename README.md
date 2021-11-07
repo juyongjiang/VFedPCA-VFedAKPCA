@@ -10,18 +10,6 @@ This is the official source code for the Paper: **Vertical Federated Principal C
   <b>Figure</b>: Server-Clients Architecture
 </p>
 
-## Experiment Description
-
-The main function file of the algorithm is: utils.py, the rest are supporting files. If you need run this code, please import utils first. A brief explanation of files is shown below:
-[]()
-
-#### Data
-We use real datasets including structured datasets and image datasets. Experiment 1,2,3 use structured datasets and Experiment 4 uses image datasets for testing. You can also use other datasets for testing, just adjust the input size of the dataset.
-
-#### Tips
-Datasets used here are relatively small, which will not take too much time for running. The actual running time of the code is determined by the number of data samples. If the datasets with a larger number of samples, the running time of VFedPCA and VFedAKPCA algorithm will be relatively long.
-
-
 ## Master Branch
 ```
 VFedPCA+VFedAKPCA                    
@@ -42,11 +30,26 @@ VFedPCA+VFedAKPCA
 
 ## Environments
 
-- python = 3.6.12
-- torch = 1.4.0
-- torchvision = 0.5.0
+- python = 3.8.8
+- numpy = 1.20.1
+- pandas = 1.2.4
+- scikit-learn = 0.24.1
+- scipy = 1.6.2
+- imageio = 2.9.0
 
 ## Prepare your own dataset
+
+Experiment Description
+
+The main function file of the algorithm is: utils.py, the rest are supporting files. If you need run this code, please import utils first. A brief explanation of files is shown below:
+[]()
+
+Data
+We use real datasets including structured datasets and image datasets. Experiment 1,2,3 use structured datasets and Experiment 4 uses image datasets for testing. You can also use other datasets for testing, just adjust the input size of the dataset.
+
+Tips
+Datasets used here are relatively small, which will not take too much time for running. The actual running time of the code is determined by the number of data samples. If the datasets with a larger number of samples, the running time of VFedPCA and VFedAKPCA algorithm will be relatively long.
+
 you need to create a folder named dataset firstly
 
 ```bash
