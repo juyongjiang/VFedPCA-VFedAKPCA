@@ -4,7 +4,7 @@
 # The main function in VFedPAC and VFedAKPCA 
 # @Time   : 2021/11/06
 # @Author : Feng Yu, Juyong Jiang
-# @Email  : 2063616201@qq.com, csjuyongjiang@gmail.com
+# @Email  : fengyu.sophia@gmail.com, csjuyongjiang@gmail.com
 
 import math
 import model
@@ -57,8 +57,7 @@ if __name__ == '__main__':
     print("The number of sampling: ", len(da1)) # [batch_size, fea_num]
 
     # Each d is sampler with (batch size * id, fea_num)
-    d0, d1, d2, d3, d4 = utils.get_concat_data(da1, sampler_num) 
-    d_list = [d0, d1, d2, d3, d4]
+    d_list = utils.get_concat_data(da1, sampler_num) 
     print("The shape of each d: ", [d.shape for d in d_list])
     
     centers_list = utils.get_centers_data(d_list, p_list) # [[d0, d1, d2, d3, d4], [d0, d1, d2, d3, d4],...]

@@ -4,7 +4,7 @@
 # The main function in VFedPAC and VFedAKPCA 
 # @Time   : 2021/11/06
 # @Author : Feng Yu, Juyong Jiang
-# @Email  : 2063616201@qq.com, csjuyongjiang@gmail.com
+# @Email  : fengyu.sophia@gmail.com, csjuyongjiang@gmail.com
 
 import math
 import utils

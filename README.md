@@ -65,7 +65,11 @@ python main.py --data_path './dataset/College.csv' --batch_size 160
 ```
 Then, you only need to set different `flag`, `p_list`, `iter_list` and `sampler_num` to exmaines the effect of feature size, local iterations, warm-start power iterations, and weight scaling method on structed datasets. The example is as follows.
 ```
-flag ='clients'
+# 'clients': the effect of local feature size; 
+# 'iterations': the effect of local iterations; 
+# 'warmstart': The effect of warm-start power iterations.
+
+flag ='clients' 
 p_list = [3, 5, 10]         # the number of involved clients
 iter_list = [100, 100, 100] # the number of local power iterations
 sampler_num = 5
@@ -73,7 +77,8 @@ sampler_num = 5
 
 ### B. Case Studies
 ```bash
-python main.py --data_path '../dataset/Image/DeepLesion' /
+$ cd case                   # change into case folder
+$ python main.py --data_path '../dataset/Image/DeepLesion' /
                --client_num 8 / 
                --iterations 100 / 
                --re_size 512
