@@ -61,7 +61,7 @@ We conduct extensive experiments on structured datasets to exmaines the effect o
 ### A. Experiment on Structured Dataset
 First, you need to choose the dataset.
 ```bash
-python main.py --data_path './dataset/College.csv' --batch_size 160 
+$ python main.py --data_path './dataset/College.csv' --batch_size 160 
 ```
 Then, you only need to set different `flag`, `p_list`, `iter_list` and `sampler_num` to exmaines the effect of feature size, local iterations, warm-start power iterations, and weight scaling method on structed datasets. The example is as follows.
 ```
