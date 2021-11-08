@@ -20,8 +20,8 @@ def federated(d_list, a_arr, v_arr):
     final_list = []
     for d in d_list:
         final_list.append(d.T.dot(u.T))
-    final = np.vstack(final_list)
-    print("Federated PCA Final shape: ", final.shape)
+    final = np.hstack(final_list)
+    # print("Federated PCA Final shape: ", final.shape)
 
     return final
 
@@ -54,7 +54,7 @@ def power_iteration(A, num_simu, v=None, first=None):
 
     return b_k
 
-#Advanced Kernel PCA method
+# Advanced Kernel PCA method
 def AKpca(data, n_dims, kernel):
     #:param data: (n_samples, n_features)
     #:param n_dims: target n_dims
@@ -75,3 +75,41 @@ def AKpca(data, n_dims, kernel):
     #data_f=data.T.dot(data_n)
 
     return eigval, eigvector, data_n
+
+# Kernel PCA method
+def Kpca(data, n_dims, kernel):
+    #:param data: (n_samples, n_features)
+    #:param n_dims: target n_dims
+    #:param kernel: kernel functions
+    #:return: (n_samples, n_dims)
+
+    K = kernel(data)
+    N = K.shape[0]
+    one_n = np.ones((N, N)) / N
+    K = K - one_n.dot(K) - K.dot(one_n) + one_n.dot(K).dot(one_n)
+    eig_values, eig_vector = np.linalg.eig(K)
+    idx = eig_values.argsort()[::-1]
+    eigval = eig_values[idx][:n_dims]
+    eigvector = eig_vector[:, idx][:, :n_dims]
+    eigval = eigval**(1/2)
+    vi = eigvector/eigval.reshape(-1,n_dims)
+    data_n = np.dot(K, vi)
+
+    return data_n
+
+# PCA method
+def pca(data, k=1):
+    mean_vec = np.mean(data, axis=0)
+    scaled_x = data-mean_vec
+    data_adjust = np.abs(scaled_x.T)
+    cov_mat = np.cov(scaled_x)
+    eig_vals, eig_vecs = np.linalg.eig(cov_mat)
+    index = np.argsort(-eig_vals)
+    selectVal = np.matrix(eig_vals.T[index[:k]])
+    a = np.array(selectVal)
+    selectVec = np.matrix(eig_vecs.T[index[:k]])
+    v = np.array(selectVec)
+    V = np.abs(v)
+    finalData = scaled_x.T.dot(v.T)
+
+    return finalData

@@ -7,7 +7,7 @@ This is the official source code for the Paper: **Vertical Federated Principal C
 <p align="center">
   <img src="figs/sc_arc.png" alt="Server-Clients Architecture" width="600">
   <br>
-  <b>Figure</b>: Server-Clients Architecture
+  <b>Figure 1.</b>: Server-Clients Architecture
 </p>
 
 ## Master Branch
@@ -35,7 +35,6 @@ VFedPCA+VFedAKPCA
 - python = 3.8.8
 - numpy = 1.20.1
 - pandas = 1.2.4
-- scikit-learn = 0.24.1
 - scipy = 1.6.2
 - imageio = 2.9.0
 
@@ -83,6 +82,13 @@ $ python main.py --data_path '../dataset/Image/DeepLesion' /
                --iterations 100 / 
                --re_size 512
 ```
+# Demo Visualization
+The final results of comparative experiment on image datasets: YaleFace (center-light), CasiaGait (sequence 1) and DeepLesion with algorithms: (a) PCA: the un-split data, (b) VFedPCA: the split data, (c) PCA: the isolated data, (d) the un-split data, (e) the federated data, (f) the isolated data.
+<p align="center">
+  <img src="figs/demo_vis.png" alt="Server-Clients Architecture" width="600">
+  <br>
+  <b>Figure 2.</b>: Server-Clients Architecture
+</p>
 
 ## Citation
 ```

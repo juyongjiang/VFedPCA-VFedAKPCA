@@ -134,7 +134,7 @@ def draw_fig_single(data_name, sampler_num, p_list, err_list, show=True, fig_pat
     foo_fig = plt.gcf() # 'get current figure'
     if not os.path.exists(fig_path):
         os.makedirs(fig_path)
-    foo_fig.savefig(os.path.join(fig_path, data_name + '_ws' + '.eps'), format='eps', dpi=1000)
-    foo_fig.savefig(os.path.join(fig_path, data_name + '_ws' + '.png'), format='png')
+    foo_fig.savefig(os.path.join(fig_path, data_name + '_ws' + '.eps'), bbox_inches='tight', format='eps', dpi=1000)
+    foo_fig.savefig(os.path.join(fig_path, data_name + '_ws' + '.png'), bbox_inches='tight', format='png', dpi=1000)
     if show:
         plt.show()

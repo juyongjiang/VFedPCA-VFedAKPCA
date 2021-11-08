@@ -15,20 +15,18 @@ import argparse
 import pandas as pd
 import numpy as np
 
-from sklearn import datasets, preprocessing
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_path', type=str, default='./dataset/College.csv')
     parser.add_argument('--batch_size', type=int, default=160)
-    parser.add_argument('--show', action='store_true', default=False, help='decide whether show results image in terminal')
+    parser.add_argument('--show', action='store_true', default=False, help='decide whether display image in terminal')
     args = parser.parse_args()
 
     # EXP-1 
-    # flag ='clients'
-    # p_list = [3, 5, 10] # the number of involved clients
-    # iter_list = [100, 100, 100] # the number of local power iterations
-    # sampler_num = 5
+    flag ='clients'
+    p_list = [3, 5, 10] # the number of involved clients
+    iter_list = [100, 100, 100] # the number of local power iterations
+    sampler_num = 5
 
     # EXP-2
     # flag ='iterations'

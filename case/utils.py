@@ -8,8 +8,9 @@
 
 import os
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-
 from model import max_eigen
 from scipy.spatial.distance import pdist, squareform
 
@@ -35,7 +36,7 @@ def get_final_data(d_list, max_eigv_list):
     final_list = []
     for d, e in zip(d_list, max_eigv_list):
         final_list.append(d.T.dot(e.T))
-    final = np.vstack(final_list)
+    final = np.hstack(final_list)
 
     return final
 
@@ -51,17 +52,16 @@ def get_xpca_data(d_list, func, kernel, n_dims=1):
     return max_eigs_list, max_eigv_list, max_f_list
 
 def draw_subfig(result, name, re_size, show=True, path='./figs'):
-    result = np.array(result, dtype='float')
+    result = np.array(result, dtype='float').reshape(re_size, re_size)
+    fig, ax1 = plt.subplots()
     plt.axis('off')
-    plt.imshow(result.reshape(re_size, re_size), interpolation = "none", cmap = "gray")
-    foo_fig = plt.gcf() #
+    plt.imshow(result, interpolation = "none", cmap = "gray")
     if not os.path.exists(path):
         os.makedirs(path)
     path = os.path.join(path, name)
-    foo_fig.savefig(path+'.eps', format='eps', dpi=1000, bbox_inches='tight', pad_inches=0.0)
-    foo_fig.savefig(path+'.png', format='png', dpi=1000, bbox_inches='tight', pad_inches=0.0)
-    if show:
-        plt.show()
+    plt.savefig(path+'.eps', format='eps', dpi=1000, bbox_inches='tight', pad_inches=0.0)
+    plt.savefig(path+'.png', format='png', dpi=1000, bbox_inches='tight', pad_inches=0.0)
+    plt.show()
 
 def sigmoid(x, coef = 0.25):
     x = np.dot(x, x.T)

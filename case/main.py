@@ -16,11 +16,11 @@ import model
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_path', type=str, default='../dataset/Image/DeepLesion')
-    parser.add_argument('--client_num', type=int, default=8)
+    parser.add_argument('--data_path', type=str, default='../dataset/Image/Face/Face_1')
+    parser.add_argument('--client_num', type=int, default=10)
     parser.add_argument('--iterations', type=int, default=100)
-    parser.add_argument('--re_size', type=int, default=512)
-    parser.add_argument('--show', action='store_true', default=False, help='decide whether show results image in terminal')
+    parser.add_argument('--re_size', type=int, default=100)
+    parser.add_argument('--show', action='store_true', default=False, help='decide whether display image in terminal')
     args = parser.parse_args()
     
     # cuhk03
@@ -61,6 +61,7 @@ if __name__ == '__main__':
 
     # vertically partition dataset 
     d_list = utils.get_split_data(f, args.client_num) # each clients with [img_num, w*h/client_num]
+    print('-----------------------------------')
     print("The shape of each d: ", [d.shape for d in d_list])
     max_eigs_list, max_eigv_list = utils.get_eig_data(d_list, args.iterations)
 
@@ -86,12 +87,14 @@ if __name__ == '__main__':
     is_vfedak_pca = np.vstack(x_max_f_list) 
     
     # print shape to check
+    print('-----------------------------------')
     print('The shape of us_pca: ', us_pca.shape)
     print('The shape of vfed_pca: ', vfed_pca.shape)
     print('The shape of is_pca: ', is_pca.shape)
     print('The shape of vfedak_pca: ', vfedak_pca.shape)
     print('The shape of us_vfedak_pca: ', us_vfedak_pca.shape)
     print('The shape of is_vfedak_pca: ', is_vfedak_pca.shape)
+
     # draw each sub-figure
     utils.draw_subfig(us_pca, 'us_pca_' + data_name, args.re_size, args.show)
     utils.draw_subfig(vfed_pca, 'vfed_pca_' + data_name, args.re_size, args.show)
