@@ -65,7 +65,7 @@ def pca(data, k=10):
     finaldata = data_adjust.dot(V.T)
     return a, V, finaldata
 
-# Local power iteration processing or with warm start v
+# Local power iteration processing or with warm start v to get eigenvalue and eigenvector
 def max_eigen(A, iter_num=100, v=None, first=None):
     mat_cov = np.cov(A)
     max_eigs = mat_maxeigs(mat_cov)

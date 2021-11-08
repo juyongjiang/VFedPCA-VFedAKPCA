@@ -14,19 +14,13 @@ import argparse
 import numpy as np
 import model
 
-from mpl_toolkits.mplot3d import Axes3D
-from sklearn import datasets, preprocessing
-from sklearn.cluster import KMeans
-from sklearn.decomposition import KernelPCA
-from scipy.spatial.distance import pdist, squareform
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_path', type=str, default='../dataset/Image/DeepLesion')
     parser.add_argument('--client_num', type=int, default=8)
     parser.add_argument('--iterations', type=int, default=100)
     parser.add_argument('--re_size', type=int, default=512)
+    parser.add_argument('--show', action='store_true', default=False, help='decide whether show results image in terminal')
     args = parser.parse_args()
     
     # cuhk03
@@ -49,46 +43,60 @@ if __name__ == '__main__':
     # iterations = 100
     # args.re_size = 100
 
+    # print information about dataset
+    data_name = args.data_path.split('/')[-1]
+    print("The name of dataset: ", data_name)
     imgpath_list = sorted([os.path.join(args.data_path, file) for file in os.listdir(args.data_path)])
     print("The number of images: ", len(imgpath_list))
     
+    # read all images as numpy array
     resarr_list = []
     for path in imgpath_list:
-        img = np.asarray(imageio.imread(path)).flatten() # (w, h) -> (w*h,)
+        img = np.asarray(imageio.imread(path))
+        img_size = img.shape
+        img = img.flatten() # (w, h) -> (w*h,)
         resarr_list.append(img)
-    
+    print("The size of each image: ", img_size)
     f = np.asarray(resarr_list) # [img_num, w*h]
-    d_list = utils.get_split_data(f, args.client_num) # d1, d2, d3, d4, d5, d6, d7, d8
+
+    # vertically partition dataset 
+    d_list = utils.get_split_data(f, args.client_num) # each clients with [img_num, w*h/client_num]
+    print("The shape of each d: ", [d.shape for d in d_list])
     max_eigs_list, max_eigv_list = utils.get_eig_data(d_list, args.iterations)
 
     # algorithm start 
     max_eigs_f, max_eigv_f = model.max_eigen(f)
-    train_f = f.T.dot(max_eigv_f.T)
+    # unsplitted pca
+    us_pca = f.T.dot(max_eigv_f.T) 
+    
+    # VFedPCA 
+    vfed_pca = model.federated(d_list, max_eigs_list, max_eigv_list)
 
-    final = model.federated(d_list, max_eigs_list, max_eigv_list)
+    # isolated PCA
+    is_pca = utils.get_final_data(d_list, max_eigv_list) 
 
-    sf = utils.get_final_data(d_list, max_eigv_list)
+    # VFedAKpca
+    x_max_eigs_list, x_max_eigv_list, x_max_f_list = utils.get_xpca_data(d_list, model.AKpca, utils.rbf) 
+    vfedak_pca = model.federated(d_list, x_max_eigs_list, x_max_eigv_list) 
 
-    x_max_eigs_list, x_max_eigv_list, x_max_f_list = utils.get_xpca_data(d_list, model.AKpca, utils.rbf)
-    aFinal = model.federated(d_list, x_max_eigs_list, x_max_eigv_list)
+    # unsplitted VFedAKpca
+    al, av, us_vfedak_pca = model.AKpca(f, n_dims=1, kernel=utils.rbf) 
 
-    al, av, af = model.AKpca(f, n_dims=1, kernel=utils.rbf)
-
-    afinal = np.vstack(x_max_f_list)
+    # isolated VFedAKpca
+    is_vfedak_pca = np.vstack(x_max_f_list) 
     
     # print shape to check
-    print('The shape of train_f: ', train_f.shape)
-    print('The shape of final: ', final.shape)
-    print('The shape of sf: ', sf.shape)
-    print('The shape of aFinal1: ', aFinal.shape)
-    print('The shape of af: ', af.shape)
-    print('The shape of afinal: ', afinal.shape)
-
+    print('The shape of us_pca: ', us_pca.shape)
+    print('The shape of vfed_pca: ', vfed_pca.shape)
+    print('The shape of is_pca: ', is_pca.shape)
+    print('The shape of vfedak_pca: ', vfedak_pca.shape)
+    print('The shape of us_vfedak_pca: ', us_vfedak_pca.shape)
+    print('The shape of is_vfedak_pca: ', is_vfedak_pca.shape)
     # draw each sub-figure
-    utils.draw_subfig(train_f, 'cug1', args.re_size)
-    utils.draw_subfig(final, 'cuf1', args.re_size)
-    utils.draw_subfig(sf, 'cus1', args.re_size)
+    utils.draw_subfig(us_pca, 'us_pca_' + data_name, args.re_size, args.show)
+    utils.draw_subfig(vfed_pca, 'vfed_pca_' + data_name, args.re_size, args.show)
+    utils.draw_subfig(is_pca, 'is_pca_' + data_name, args.re_size, args.show)
 
-    utils.draw_subfig(aFinal, 'kcuf1', args.re_size)
-    utils.draw_subfig(af, 'kcug1', args.re_size)
-    utils.draw_subfig(afinal, 'kcus1', args.re_size)
+    utils.draw_subfig(vfedak_pca, 'vfedak_pca_' + data_name, args.re_size, args.show)
+    utils.draw_subfig(us_vfedak_pca, 'us_vfedak_pca_' + data_name, args.re_size, args.show)
+    utils.draw_subfig(is_vfedak_pca, 'is_vfedak_pca_' + data_name, args.re_size, args.show)

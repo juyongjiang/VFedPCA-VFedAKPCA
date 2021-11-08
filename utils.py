@@ -71,7 +71,7 @@ def get_centers_data_pd(d_list, p_list):
 
     return centers_list
 
-def draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, flag='clients', fig_path='./figs', show=True):
+def draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, flag='clients', show=True, fig_path='./figs'):
     font2 = {'family' : 'Times New Roman',
     'weight' : 'light',
     'size'   : 13,
@@ -109,7 +109,7 @@ def draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, fla
     if show:
         plt.show()
 
-def draw_fig_single(data_name, sampler_num, p_list, err_list, fig_path='./figs', show=True):
+def draw_fig_single(data_name, sampler_num, p_list, err_list, show=True, fig_path='./figs'):
     font2 = {'family' : 'Times New Roman',
     'weight' : 'light',
     'size'   : 13,

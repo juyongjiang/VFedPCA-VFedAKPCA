@@ -50,17 +50,18 @@ def get_xpca_data(d_list, func, kernel, n_dims=1):
 
     return max_eigs_list, max_eigv_list, max_f_list
 
-def draw_subfig(final, name, re_size, path='./figs'):
-    final = np.array(final,dtype='float')
+def draw_subfig(result, name, re_size, show=True, path='./figs'):
+    result = np.array(result, dtype='float')
     plt.axis('off')
-    plt.imshow(final.reshape(re_size, re_size), interpolation = "none", cmap = "gray")
+    plt.imshow(result.reshape(re_size, re_size), interpolation = "none", cmap = "gray")
     foo_fig = plt.gcf() #
     if not os.path.exists(path):
         os.makedirs(path)
     path = os.path.join(path, name)
     foo_fig.savefig(path+'.eps', format='eps', dpi=1000, bbox_inches='tight', pad_inches=0.0)
     foo_fig.savefig(path+'.png', format='png', dpi=1000, bbox_inches='tight', pad_inches=0.0)
-    plt.show()
+    if show:
+        plt.show()
 
 def sigmoid(x, coef = 0.25):
     x = np.dot(x, x.T)

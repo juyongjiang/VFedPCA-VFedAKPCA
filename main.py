@@ -21,6 +21,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_path', type=str, default='./dataset/College.csv')
     parser.add_argument('--batch_size', type=int, default=160)
+    parser.add_argument('--show', action='store_true', default=False, help='decide whether show results image in terminal')
     args = parser.parse_args()
 
     # EXP-1 
@@ -74,8 +75,8 @@ if __name__ == '__main__':
         err_list, time_list = model.get_dis_time(max_eigv_list, d_list, p_list, centers_list, iter_list)
         print('Error convergence: ', err_list)
         print('Time consuming: ', time_list)
-        utils.draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, flag)
+        utils.draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, flag, args.show)
 
     if flag == 'warmstart':
         err_ws_list = model.get_dis_ws(d_list, p_list, centers_list[0])
-        utils.draw_fig_single(data_name, sampler_num, p_list, err_ws_list)
+        utils.draw_fig_single(data_name, sampler_num, p_list, err_ws_list, args.show)
