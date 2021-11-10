@@ -16,33 +16,19 @@ import model
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_path', type=str, default='../dataset/Image/Face/Face_1')
-    parser.add_argument('--client_num', type=int, default=10)
+    parser.add_argument('--data_path', type=str, default='../dataset/Image/CASIA/Gait_10')
+    parser.add_argument('--client_num', type=int, default=16)
     parser.add_argument('--iterations', type=int, default=100)
-    parser.add_argument('--re_size', type=int, default=100)
-    parser.add_argument('--show', action='store_true', default=False, help='decide whether display image in terminal')
+    parser.add_argument('--re_size', type=int, default=256)
+    parser.add_argument('--n_clusters', type=int, default=10)
+    parser.add_argument('--kernel', type=str, default='sigmoid')
+
+    parser.add_argument('--kpca', action='store_true', default=False, help='decide use Kernel PCA Method')
+    parser.add_argument('--wo_ws', action='store_true', default=False, help='decide not use weight scaling method in federated communication')
+    parser.add_argument('--de_ct', action='store_true', default=False, help='decide use decentralized architecture in federated communication')
+    parser.add_argument('--show', action='store_true', default=False, help='decide display image in terminal')
     args = parser.parse_args()
     
-    # cuhk03
-    # client_num = 8
-    # iterations = 10
-    # args.re_size = 128
-
-    # lung
-    # client_num = 8
-    # iterations = 100
-    # args.re_size = 512
-
-    # gait
-    # client_num = 16
-    # iterations = 50
-    # args.re_size = 256
-    
-    # face
-    # client_num = 10
-    # iterations = 100
-    # args.re_size = 100
-
     # print information about dataset
     data_name = args.data_path.split('/')[-1]
     print("The name of dataset: ", data_name)
@@ -57,49 +43,74 @@ if __name__ == '__main__':
         img = img.flatten() # (w, h) -> (w*h,)
         resarr_list.append(img)
     print("The size of each image: ", img_size)
+
+    # obtain the whole dataset eigenvalue and eigenvector
     f = np.asarray(resarr_list) # [img_num, w*h]
+    max_eigs_f, max_eigv_f = model.max_eigen(f, args.iterations)
 
     # vertically partition dataset 
     d_list = utils.get_split_data(f, args.client_num) # each clients with [img_num, w*h/client_num]
     print('-----------------------------------')
     print("The shape of each d: ", [d.shape for d in d_list])
-    max_eigs_list, max_eigv_list = utils.get_eig_data(d_list, args.iterations)
+    # get each clients' eigenvalue and eigenvector, respectively
+    max_eigs_list, max_eigv_list = utils.get_eig_data(d_list, args.iterations) 
 
-    # algorithm start 
-    max_eigs_f, max_eigv_f = model.max_eigen(f)
+    r'''###################################
+                        PCA
+        ###################################
+    '''
     # unsplitted pca
     us_pca = f.T.dot(max_eigv_f.T) 
+   
+    # splitted VFedPCA 
+    vfed_pca = model.federated(d_list, max_eigs_list, max_eigv_list, args.wo_ws, args.de_ct)
     
-    # VFedPCA 
-    vfed_pca = model.federated(d_list, max_eigs_list, max_eigv_list)
-
     # isolated PCA
-    is_pca = utils.get_final_data(d_list, max_eigv_list) 
-
-    # VFedAKpca
-    x_max_eigs_list, x_max_eigv_list, x_max_f_list = utils.get_xpca_data(d_list, model.AKpca, utils.rbf) 
-    vfedak_pca = model.federated(d_list, x_max_eigs_list, x_max_eigv_list) 
-
-    # unsplitted VFedAKpca
-    al, av, us_vfedak_pca = model.AKpca(f, n_dims=1, kernel=utils.rbf) 
-
-    # isolated VFedAKpca
-    is_vfedak_pca = np.vstack(x_max_f_list) 
+    is_pca = model.isolated(d_list, max_eigv_list) 
     
     # print shape to check
     print('-----------------------------------')
     print('The shape of us_pca: ', us_pca.shape)
     print('The shape of vfed_pca: ', vfed_pca.shape)
     print('The shape of is_pca: ', is_pca.shape)
-    print('The shape of vfedak_pca: ', vfedak_pca.shape)
+
+    # draw each sub figure
+    # utils.draw_subfig(us_pca, 'us_pca_' + data_name, args.re_size, args.show)
+    utils.draw_subfig(vfed_pca, 'vfed_pca_' + data_name, args.re_size, args.show)
+    # utils.draw_subfig(is_pca, 'is_pca_' + data_name, args.re_size, args.show)
+
+    # draw each cluster figure
+    # utils.draw_cluster(args.n_clusters, us_pca, 'us_pca_cluster_' + data_name, args.re_size, args.show)
+    utils.draw_cluster(args.n_clusters, vfed_pca, 'vfed_pca_cluster_' + data_name, args.re_size, args.show)
+    # utils.draw_cluster(args.n_clusters, is_pca, 'is_pca_cluster_' + data_name, args.re_size, args.show)
+    
+    r'''###################################
+                    VFedAKPCA 
+        ###################################
+    '''
+    if not args.kpca:
+        print("Warning: You are using A_KPCA method!")
+        # unsplitted VFedAKPCA
+        al, av, us_vfedak_pca = model.AKPCA(f, n_dims=1, kernel_name=args.kernel) # f=[img_num, w*h]
+        # splitted VFedAKPCA 
+        x_max_eigs_list, x_max_eigv_list, x_max_f_list = utils.get_x_pca_data(d_list, model.AKPCA, kernel_name=args.kernel, n_dims=1) 
+    
+    else:
+        print("Warning: You are using KPCA method!")
+        # unsplitted VFedKPCA
+        al, av, us_vfedak_pca = model.KPCA(f, n_dims=1, kernel_name=args.kernel) # f=[img_num, w*h]
+        # splitted VFedKPCA 
+        x_max_eigs_list, x_max_eigv_list, x_max_f_list = utils.get_x_pca_data(d_list, model.KPCA, kernel_name=args.kernel, n_dims=1) 
+    
+    vfedak_pca = model.federated(d_list, x_max_eigs_list, x_max_eigv_list, args.wo_ws, args.de_ct) 
+    # isolated VFedAKPCA / VFedKPCA
+    is_vfedak_pca = np.vstack(x_max_f_list) 
+    
     print('The shape of us_vfedak_pca: ', us_vfedak_pca.shape)
+    print('The shape of vfedak_pca: ', vfedak_pca.shape)
     print('The shape of is_vfedak_pca: ', is_vfedak_pca.shape)
 
     # draw each sub-figure
-    utils.draw_subfig(us_pca, 'us_pca_' + data_name, args.re_size, args.show)
-    utils.draw_subfig(vfed_pca, 'vfed_pca_' + data_name, args.re_size, args.show)
-    utils.draw_subfig(is_pca, 'is_pca_' + data_name, args.re_size, args.show)
-
+    # utils.draw_subfig(us_vfedak_pca, 'us_vfedak_pca_' + data_name, args.re_size, args.show)
     utils.draw_subfig(vfedak_pca, 'vfedak_pca_' + data_name, args.re_size, args.show)
-    utils.draw_subfig(us_vfedak_pca, 'us_vfedak_pca_' + data_name, args.re_size, args.show)
-    utils.draw_subfig(is_vfedak_pca, 'is_vfedak_pca_' + data_name, args.re_size, args.show)
+    # utils.draw_subfig(is_vfedak_pca, 'is_vfedak_pca_' + data_name, args.re_size, args.show)
