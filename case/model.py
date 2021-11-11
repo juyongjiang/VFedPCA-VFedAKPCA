@@ -12,14 +12,14 @@ from scipy.spatial.distance import pdist, squareform
 
 # Federated algorithm
 # 'wo' decides whether close weight scales federated learning
-def federated(d_list, a_arr, v_arr, wo=False, de=False):
-    if de:
+def federated(args, d_list, a_arr, v_arr):
+    if args.de_ct:
         print("Warning: You are using Fully Decentralized Architecture!")
-        final = dec_federated(d_list, a_arr, v_arr, wo)
+        final = dec_federated(d_list, a_arr, v_arr, args.wo_ws)
 
         return final
     else:
-        if wo:
+        if args.wo_ws:
             print("Warning: You don't use Weight Scaling Method, istead of Average!")
             a_arr = [1.0/len(a_arr) for i in range(len(a_arr))]
         # the weight of each client based on eigenvalue
@@ -33,7 +33,7 @@ def federated(d_list, a_arr, v_arr, wo=False, de=False):
         
         final_list = []
         for d in d_list:
-            final_list.append(d.T.dot(u.T))
+            final_list.append(d.T.dot(u.T) if not args.kpca else d.T.dot(d).dot(u.T).T)
         final = np.hstack(final_list)
         # print("Federated PCA Final shape: ", final.shape)
         
@@ -123,9 +123,9 @@ def KPCA(data, n_dims, kernel_name):
     eigvector = eig_vector[:, idx][:, :n_dims]
     vi = eigvector / eigval.reshape(-1, n_dims)
 
-    data_n = np.dot(K, vi) # optional
+    # data_n = np.dot(K, vi) # optional
 
-    return eigval, eigvector.reshape(-1), data_n
+    return eigval, vi, vi
 
 # PCA method
 def PCA(data, k=1):

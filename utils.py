@@ -82,6 +82,11 @@ def draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, fla
     color = ['g', 'r', 'b']
 
     fig, ax1 = plt.subplots()
+    xy = plt.gca()
+    xy.spines['bottom'].set_linewidth(2)
+    xy.spines['left'].set_linewidth(2)
+    xy.spines['right'].set_linewidth(2)
+    xy.spines['top'].set_linewidth(2)
     ax2 = ax1.twinx()   
     ax1.set_title(data_name, font2) 
     ax1.set_xlabel('Communication Period', font2)    
@@ -90,12 +95,12 @@ def draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, fla
 
     if flag == 'clients':
         for i in range(len(p_list)):        
-            ax1.plot(x1, err_list[i], color[i], ls='-', label='p='+str(p_list[i]), linewidth=1)
-            ax2.plot(x2, time_list[i], color[i], ls='--', label='p='+str(p_list[i]), linewidth=1, marker='s')
+            ax1.plot(x1, err_list[i], color[i], ls='-', label='p='+str(p_list[i]), linewidth=2)
+            ax2.plot(x2, time_list[i], color[i], ls='--', label='p='+str(p_list[i]), linewidth=2, marker='s')
     else:
         for i in range(len(iter_list)):        
-            ax1.plot(x1, err_list[i], color[i], ls='-', label='l='+str(iter_list[i]), linewidth=1)
-            ax2.plot(x2, time_list[i], color[i], ls='--', label='l='+str(iter_list[i]), linewidth=1, marker='s')
+            ax1.plot(x1, err_list[i], color[i], ls='-', label='l='+str(iter_list[i]), linewidth=2)
+            ax2.plot(x2, time_list[i], color[i], ls='--', label='l='+str(iter_list[i]), linewidth=2, marker='s')
 
     # save img as eps format
     mp.gcf().autofmt_xdate()
@@ -111,14 +116,19 @@ def draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, fla
 
 def draw_fig_single(data_name, sampler_num, p_list, err_list, show=True, fig_path='./figs'):
     font2 = {'family' : 'Times New Roman',
-    'weight' : 'light',
-    'size'   : 13,
+    'weight' : 'bold',
+    'size'   : 16,
     }
 
     x3 = np.arange(0, sampler_num, 1)
     color = ['g', 'r', 'b']
 
     fig, ax1 = plt.subplots()
+    xy = plt.gca()
+    xy.spines['bottom'].set_linewidth(2)
+    xy.spines['left'].set_linewidth(2)
+    xy.spines['right'].set_linewidth(2)
+    xy.spines['top'].set_linewidth(2)
     plt.xticks(x3)
     ax1.set_title(data_name, font2) 
     ax1.set_xlabel('Communication Period', font2)    
@@ -126,7 +136,7 @@ def draw_fig_single(data_name, sampler_num, p_list, err_list, show=True, fig_pat
     
     for i in range(len(p_list)): 
         err_list[i].reverse()
-        ax1.plot(x3, err_list[i], color[2], ls='-', linewidth=1)
+        ax1.plot(x3, err_list[i], color[2], ls='-', linewidth=2)
     
     # save img as eps format
     mp.gcf().autofmt_xdate()

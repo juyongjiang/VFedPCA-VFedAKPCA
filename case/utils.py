@@ -41,7 +41,6 @@ def get_x_pca_data(d_list, func, kernel_name, n_dims=1):
         max_eigv_list.append(max_eigv.T)
         max_f_list.append(max_f)
 
-
     return max_eigs_list, max_eigv_list, max_f_list
 
 def draw_subfig(result, name, re_size, show=True, path='./figs'):
