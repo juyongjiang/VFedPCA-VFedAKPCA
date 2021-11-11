@@ -160,7 +160,7 @@ def draw_fig_single(data_name, sampler_num, p_list, err_list, flag, show=True, f
     plt.show()
 
 def get_guas_data(u_list, sigma_list, shape, data_name=''):
-    n, m = shape
+    n, m = shape # N samples X M features
     each_num = n * m / len(u_list)
     
     y_list = []

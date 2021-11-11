@@ -26,7 +26,7 @@ if __name__ == '__main__':
     # synthetic dataset
     parser.add_argument('--u_list', type=list, default=[0, 4, 8])
     parser.add_argument('--sigma_list', type=list, default=[0.2, 0.6, 0.8])
-    parser.add_argument('--shape', type=list, default=[20000, 4000])
+    parser.add_argument('--shape', type=list, default=[200, 1000]) # N samples X M features
 
     parser.add_argument('--warm_start', '-w', action='store_true', default=False, help='decide use warm start Method')
     parser.add_argument('--synthetic', '-s', action='store_true', default=False, help='decide use synthetic data')
