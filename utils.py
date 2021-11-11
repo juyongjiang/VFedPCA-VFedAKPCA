@@ -8,6 +8,7 @@
 
 import os
 import numpy as np
+import math
 import matplotlib.pyplot as plt
 import matplotlib.pyplot as mp
 
@@ -71,10 +72,10 @@ def get_centers_data_pd(d_list, p_list):
 
     return centers_list
 
-def draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, flag='clients', show=True, fig_path='./figs'):
+def draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, flag='p', show=True, fig_path='./figs'):
     font2 = {'family' : 'Times New Roman',
-    'weight' : 'light',
-    'size'   : 13,
+    'weight' : 'bold',
+    'size'   : 16,
     }
 
     x1 = np.arange(sampler_num+1)
@@ -93,7 +94,7 @@ def draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, fla
     ax1.set_ylabel('Dis(V,U)', font2)   
     ax2.set_ylabel('Time /s', font2)   
 
-    if flag == 'clients':
+    if flag == 'p':
         for i in range(len(p_list)):        
             ax1.plot(x1, err_list[i], color[i], ls='-', label='p='+str(p_list[i]), linewidth=2)
             ax2.plot(x2, time_list[i], color[i], ls='--', label='p='+str(p_list[i]), linewidth=2, marker='s')
@@ -104,17 +105,16 @@ def draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, fla
 
     # save img as eps format
     mp.gcf().autofmt_xdate()
-    mp.legend(loc='best')
+    mp.legend(loc='upper left')
     # fig.tight_layout(pad=0, h_pad=0, w_pad=0)
     foo_fig = plt.gcf() # 'get current figure'
     if not os.path.exists(fig_path):
         os.makedirs(fig_path)
     foo_fig.savefig(os.path.join(fig_path, data_name + '_' + flag + '.eps'), format='eps', dpi=1000)
     foo_fig.savefig(os.path.join(fig_path, data_name + '_' + flag + '.png'), format='png')
-    if show:
-        plt.show()
+    plt.show()
 
-def draw_fig_single(data_name, sampler_num, p_list, err_list, show=True, fig_path='./figs'):
+def draw_fig_single(data_name, sampler_num, p_list, err_list, flag, show=True, fig_path='./figs'):
     font2 = {'family' : 'Times New Roman',
     'weight' : 'bold',
     'size'   : 16,
@@ -144,7 +144,28 @@ def draw_fig_single(data_name, sampler_num, p_list, err_list, show=True, fig_pat
     foo_fig = plt.gcf() # 'get current figure'
     if not os.path.exists(fig_path):
         os.makedirs(fig_path)
-    foo_fig.savefig(os.path.join(fig_path, data_name + '_ws' + '.eps'), bbox_inches='tight', format='eps', dpi=1000)
-    foo_fig.savefig(os.path.join(fig_path, data_name + '_ws' + '.png'), bbox_inches='tight', format='png', dpi=1000)
-    if show:
-        plt.show()
+    foo_fig.savefig(os.path.join(fig_path, data_name + '_' + flag + '.eps'), format='eps', dpi=1000)
+    foo_fig.savefig(os.path.join(fig_path, data_name + '_' + flag + '.png'), format='png', dpi=1000)
+    plt.show()
+
+def get_guas_data(u_list, sigma_list, shape, data_name=''):
+    n, m = shape
+    each_num = n * m / len(u_list)
+    
+    y_list = []
+    for u, sigma in zip(u_list, sigma_list):
+        print("u = ", u, "sigma = ", sigma)
+        x = np.linspace(u-5*sigma, u+5*sigma, int(each_num))
+        y = np.exp(-(x - u) ** 2 /(2* sigma **2))/(math.sqrt(2*math.pi)*sigma)
+        y_list.append(y)
+
+    y_arr = np.hstack(y_list)
+    assert y_arr.shape[-1] == n*m, print('ERROR: The number of synthetic data is not correct!') 
+    index = np.random.permutation(y_arr.size)
+    y_random_arr = y_arr[index]
+    y_matrix = y_random_arr.reshape((n, m))
+    print("The shape of synthetic matrix is: ", y_matrix.shape)
+    
+    return y_matrix, data_name
+
+    

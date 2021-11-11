@@ -1,3 +1,5 @@
 dataset/*
 *__pycache__
 *figs
+swarm-tgca
+synethetic
