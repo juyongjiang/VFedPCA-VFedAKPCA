@@ -104,7 +104,7 @@ def draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, fla
     # fig_1.tight_layout(pad=0, h_pad=0, w_pad=0)
     plt.legend(loc='upper left')
     # plt.savefig(os.path.join(fig_path, data_name + '_' + flag + '.eps'), format='eps', dpi=1000)
-    plt.savefig(os.path.join(fig_path, data_name + '_error_' + flag + '.png'), format='png')
+    plt.savefig(os.path.join(fig_path, data_name + '_error_' + flag + '.png'), format='png', dpi=1000)
     plt.show()
 
     # time
@@ -123,7 +123,7 @@ def draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, fla
     # fig_2.tight_layout(pad=0, h_pad=0, w_pad=0)
     plt.legend(loc='upper left')
     # plt.savefig(os.path.join(fig_path, data_name + '_' + flag + '.eps'), format='eps', dpi=1000)
-    plt.savefig(os.path.join(fig_path, data_name + '_time_' + flag + '.png'), format='png')
+    plt.savefig(os.path.join(fig_path, data_name + '_time_' + flag + '.png'), format='png', dpi=1000)
     plt.show()
 
 def draw_fig_single(data_name, sampler_num, p_list, err_list, flag, show=True, fig_path='./figs'):
@@ -159,24 +159,24 @@ def draw_fig_single(data_name, sampler_num, p_list, err_list, flag, show=True, f
     plt.savefig(os.path.join(fig_path, data_name + '_' + flag + '.png'), format='png', dpi=1000)
     plt.show()
 
-def get_guas_data(u_list, sigma_list, shape, data_name=''):
-    n, m = shape # N samples X M features
-    each_num = n * m / len(u_list)
+def get_guas_data(pattern, shape, data_name=''):
+    m, n = shape # M features x N samples
+    u_list = [i+1 for i in range(m)] if pattern=='mixture' else [0]
+    sigma_list = [i+1 for i in range(m)] if pattern=='mixture' else [1]
+
+    each_num = n
     
     y_list = []
     for u, sigma in zip(u_list, sigma_list):
         print("u = ", u, "sigma = ", sigma)
         x = np.linspace(u-5*sigma, u+5*sigma, int(each_num))
         y = np.exp(-(x - u) ** 2 /(2* sigma **2))/(math.sqrt(2*math.pi)*sigma)
+        y = np.expand_dims(y, axis=-1)
         y_list.append(y)
 
-    y_arr = np.hstack(y_list)
-    assert y_arr.shape[-1] == n*m, print('ERROR: The number of synthetic data is not correct!') 
-    index = np.random.permutation(y_arr.size)
-    y_random_arr = y_arr[index]
-    y_matrix = y_random_arr.reshape((n, m))
+    y_matrix = np.hstack(y_list)
+
+    assert y_matrix.shape[0]==n and y_matrix.shape[1] == m, print('ERROR: The number of synthetic data is not correct!') 
     print("The shape of synthetic matrix is: ", y_matrix.shape)
     
-    return y_matrix, data_name
-
-    
+    return y_matrix, data_name # N x M

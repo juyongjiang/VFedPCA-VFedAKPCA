@@ -20,13 +20,13 @@ if __name__ == '__main__':
     parser.add_argument('--data_path', type=str, default='./dataset/College.csv')
 
     parser.add_argument('--p_list', type=list, default=[3, 5, 10], help='the number of involved clients')
-    parser.add_argument('--iter_list', type=list, default=[100, 100, 100], help='the number of local power iterations')
+    parser.add_argument('--iter_list', type=list, default=[10, 10, 10], help='the number of local power iterations')
     parser.add_argument('--period_num', type=int, default=5)
+    parser.add_argument('--sample_num', type=int, default=None)
 
     # synthetic dataset
-    parser.add_argument('--u_list', type=list, default=[0, 4, 8])
-    parser.add_argument('--sigma_list', type=list, default=[0.2, 0.6, 0.8])
-    parser.add_argument('--shape', type=list, default=[200, 1000]) # N samples X M features
+    parser.add_argument('--pattern', type=str, default='mixture')
+    parser.add_argument('--shape', type=list, default=[1000, 200]) # # M features x N samples
 
     parser.add_argument('--warm_start', '-w', action='store_true', default=False, help='decide use warm start Method')
     parser.add_argument('--synthetic', '-s', action='store_true', default=False, help='decide use synthetic data')
@@ -46,17 +46,19 @@ if __name__ == '__main__':
     '''
         Real-world Dataset
     '''
-    data_name = args.data_path.split('/')[-1].split('.')[0]
-    data_value = pd.read_csv(args.data_path, header=None, sep=',') # [row_num, fea_num]
-    print("The name of dataset: ", data_name)
-    print("The shape of dataset: ", data_value.shape) 
+    if not args.synthetic:
+        data_name = args.data_path.split('/')[-1].split('.')[0]
+        data_value = pd.read_csv(args.data_path, header=None, sep=',')[:args.sample_num] if args.sample_num \
+                                                        else pd.read_csv(args.data_path, header=None, sep=',')# [row_num, fea_num]
+        print("The name of dataset: ", data_name)
+        print("The shape of dataset: ", data_value.shape) 
     
     '''
         Synthetic Dataset
     '''
     if args.synthetic:
         print("Warning: you are using synthetic dataset!")
-        data_value, data_name = get_guas_data(args.u_list, args.sigma_list, args.shape, data_name='')
+        data_value, data_name = utils.get_guas_data(args.pattern, args.shape, data_name='')
 
 
     # Sampling the dataset with dynamic_incremental_data_num
