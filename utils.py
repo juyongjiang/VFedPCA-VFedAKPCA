@@ -9,6 +9,8 @@
 import os
 import numpy as np
 import math
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.pyplot as mp
 
@@ -73,6 +75,9 @@ def get_centers_data_pd(d_list, p_list):
     return centers_list
 
 def draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, flag='p', show=True, fig_path='./figs'):
+    if not os.path.exists(fig_path):
+        os.makedirs(fig_path)
+
     font2 = {'family' : 'Times New Roman',
     'weight' : 'bold',
     'size'   : 16,
@@ -82,39 +87,48 @@ def draw_fig(data_name, sampler_num, p_list, err_list, time_list, iter_list, fla
     x2 = np.arange(sampler_num+1)
     color = ['g', 'r', 'b']
 
-    fig, ax1 = plt.subplots()
-    xy = plt.gca()
-    xy.spines['bottom'].set_linewidth(2)
-    xy.spines['left'].set_linewidth(2)
-    xy.spines['right'].set_linewidth(2)
-    xy.spines['top'].set_linewidth(2)
-    ax2 = ax1.twinx()   
+    # Error
+    fig_1, ax1 = plt.subplots()
+    xy1 = plt.gca()
+    xy1.spines['bottom'].set_linewidth(2)
+    xy1.spines['left'].set_linewidth(2)
+    xy1.spines['right'].set_linewidth(2)
+    xy1.spines['top'].set_linewidth(2)
+    # ax2 = ax1.twinx()   
     ax1.set_title(data_name, font2) 
     ax1.set_xlabel('Communication Period', font2)    
     ax1.set_ylabel('Dis(V,U)', font2)   
+
+    for i in range(len(p_list)):        
+        ax1.plot(x1, err_list[i], color[i], ls='-', label=flag+'='+str(p_list[i]), linewidth=2, marker='s')
+    # fig_1.tight_layout(pad=0, h_pad=0, w_pad=0)
+    plt.legend(loc='upper left')
+    # plt.savefig(os.path.join(fig_path, data_name + '_' + flag + '.eps'), format='eps', dpi=1000)
+    plt.savefig(os.path.join(fig_path, data_name + '_error_' + flag + '.png'), format='png')
+    plt.show()
+
+    # time
+    fig_2, ax2 = plt.subplots()
+    xy2 = plt.gca()
+    xy2.spines['bottom'].set_linewidth(2)
+    xy2.spines['left'].set_linewidth(2)
+    xy2.spines['right'].set_linewidth(2)
+    xy2.spines['top'].set_linewidth(2) 
+    ax2.set_title(data_name, font2) 
+    ax2.set_xlabel('Communication Period', font2)     
     ax2.set_ylabel('Time /s', font2)   
 
-    if flag == 'p':
-        for i in range(len(p_list)):        
-            ax1.plot(x1, err_list[i], color[i], ls='-', label='p='+str(p_list[i]), linewidth=2)
-            ax2.plot(x2, time_list[i], color[i], ls='--', label='p='+str(p_list[i]), linewidth=2, marker='s')
-    else:
-        for i in range(len(iter_list)):        
-            ax1.plot(x1, err_list[i], color[i], ls='-', label='l='+str(iter_list[i]), linewidth=2)
-            ax2.plot(x2, time_list[i], color[i], ls='--', label='l='+str(iter_list[i]), linewidth=2, marker='s')
-
-    # save img as eps format
-    mp.gcf().autofmt_xdate()
-    mp.legend(loc='upper left')
-    # fig.tight_layout(pad=0, h_pad=0, w_pad=0)
-    foo_fig = plt.gcf() # 'get current figure'
-    if not os.path.exists(fig_path):
-        os.makedirs(fig_path)
-    foo_fig.savefig(os.path.join(fig_path, data_name + '_' + flag + '.eps'), format='eps', dpi=1000)
-    foo_fig.savefig(os.path.join(fig_path, data_name + '_' + flag + '.png'), format='png')
+    for i in range(len(p_list)):
+        ax2.plot(x2, time_list[i], color[i], ls='--', label=flag+'='+str(p_list[i]), linewidth=2, marker='s')
+    # fig_2.tight_layout(pad=0, h_pad=0, w_pad=0)
+    plt.legend(loc='upper left')
+    # plt.savefig(os.path.join(fig_path, data_name + '_' + flag + '.eps'), format='eps', dpi=1000)
+    plt.savefig(os.path.join(fig_path, data_name + '_time_' + flag + '.png'), format='png')
     plt.show()
 
 def draw_fig_single(data_name, sampler_num, p_list, err_list, flag, show=True, fig_path='./figs'):
+    if not os.path.exists(fig_path):
+        os.makedirs(fig_path)
     font2 = {'family' : 'Times New Roman',
     'weight' : 'bold',
     'size'   : 16,
@@ -123,6 +137,7 @@ def draw_fig_single(data_name, sampler_num, p_list, err_list, flag, show=True, f
     x3 = np.arange(0, sampler_num, 1)
     color = ['g', 'r', 'b']
 
+    # Error
     fig, ax1 = plt.subplots()
     xy = plt.gca()
     xy.spines['bottom'].set_linewidth(2)
@@ -137,15 +152,11 @@ def draw_fig_single(data_name, sampler_num, p_list, err_list, flag, show=True, f
     for i in range(len(p_list)): 
         err_list[i].reverse()
         ax1.plot(x3, err_list[i], color[2], ls='-', linewidth=2)
-    
-    # save img as eps format
-    mp.gcf().autofmt_xdate()
+
     # fig.tight_layout(pad=0, h_pad=0, w_pad=0)
-    foo_fig = plt.gcf() # 'get current figure'
-    if not os.path.exists(fig_path):
-        os.makedirs(fig_path)
-    foo_fig.savefig(os.path.join(fig_path, data_name + '_' + flag + '.eps'), format='eps', dpi=1000)
-    foo_fig.savefig(os.path.join(fig_path, data_name + '_' + flag + '.png'), format='png', dpi=1000)
+    # plt.savefig(os.path.join(fig_path, data_name + '_' + flag + '.eps'), format='eps', dpi=1000)
+    plt.legend(loc='upper left')
+    plt.savefig(os.path.join(fig_path, data_name + '_' + flag + '.png'), format='png', dpi=1000)
     plt.show()
 
 def get_guas_data(u_list, sigma_list, shape, data_name=''):

@@ -96,9 +96,9 @@ def power_iteration(A, num_simu, v=None, first=None):
 
 # Calculate the distance error between two eigenvector (square)
 def squared(a, b):
-    d = 0;
+    d = 0
     for i in range(len(a)):
-        d += math.pow((a[i] - b[i]), 2) / (a[i] + b[i]);
+        d += math.pow((a[i] - b[i]), 2) / (a[i] + b[i])
 
     return d
 
