@@ -86,7 +86,7 @@ The experimental result on structured datasets (GlaucomaM), the distance error a
 <p align="center">
   <img src="figs/GlaucomaM.png" alt="Server-Clients Architecture" width="600">
   <br>
-  <b>Figure 2.</b> The results of algorithm PCA(a)/AKPCA(b) on the un-splitted data, VFedPCA(a)/VFedAKPCA(b) on the isolated data, VFedAvgPCA(a)/VFedAvgAKPCA(b) (Without Weight Scaling Method) on the isolated data, PCA(a)/AKPCA(b) on the isolated data (from top to bottom).
+  <b>Figure 2.</b> The results of VFedPCA on structured datasets (GlaucomaM).
 </p>
 
 Here is some of our case studies comparative experiment results on six image datasets: YaleFace (center-light and surprised), CasiaGait (sequence 1 and sequence 10), DeepLesion and CUHK03 (from left to right). 
@@ -94,7 +94,7 @@ Here is some of our case studies comparative experiment results on six image dat
 <p align="center">
   <img src="figs/pca_akpca.png" alt="Server-Clients Architecture" width="600">
   <br>
-  <b>Figure 2.</b> The results of algorithm PCA(a)/AKPCA(b) on the un-splitted data, VFedPCA(a)/VFedAKPCA(b) on the isolated data, VFedAvgPCA(a)/VFedAvgAKPCA(b) (Without Weight Scaling Method) on the isolated data, PCA(a)/AKPCA(b) on the isolated data (from top to bottom).
+  <b>Figure 2.</b> The results of PCA(a)/AKPCA(b) on the un-splitted data, VFedPCA(a)/VFedAKPCA(b) on the isolated data, VFedAvgPCA(a)/VFedAvgAKPCA(b) (Without Weight Scaling Method) on the isolated data, PCA(a)/AKPCA(b) on the isolated data (from top to bottom).
 </p>
 
 Furthermore, we investigate three types of decentralized topologies in Vertical Federated Learning with PCA and AKPCA (ours). The architecture of decentralized topologies are (a) Fully Decentralized, (b) Ring Decentralized, and (c) Star Decentralized, as shown in Figure 3. The experimental results are demonstrated in Figure 4. 
@@ -109,7 +109,7 @@ Furthermore, we investigate three types of decentralized topologies in Vertical 
 <p align="center">
   <img src="figs/dec_pca_akpca.png" alt="Server-Clients Architecture" width="600">
   <br>
-  <b>Figure 4.</b> The results of algorithm VFedPCA with the central coordination server, fully decentralized, ring decentralized, and start decentralized, from top to bottom respectively, on the isolated data from each clients. 
+  <b>Figure 4.</b> The results of VFedPCA with the central coordination server, fully decentralized, ring decentralized, and start decentralized, from top to bottom respectively, on the isolated data from each clients. 
 </p>
 
 ## Citation
