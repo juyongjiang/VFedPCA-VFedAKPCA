@@ -5,7 +5,7 @@ This is the official source code for the Paper: **Vertical Federated Principal C
 
 ## Server-Clients Architecture
 <p align="center">
-  <img src="figs/server_client.png" alt="Server-Clients Architecture" width="600">
+  <img src="figs/server_client.png" alt="Server-Clients Architecture" width="400">
   <br>
   <b>Figure 1.</b>: Server-Clients Architecture
 </p>
