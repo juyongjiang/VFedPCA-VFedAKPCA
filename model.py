@@ -10,166 +10,135 @@ import math
 import time
 import numpy as np
 
-# Federated algorithm
-def federated(a_arr, v_arr):
-    # the weight of each client based on eigenvalue
-    v_w = a_arr / np.sum(a_arr)
-    # re-weight the importance of each client's eigenvector (v_w * v_arr)
-    B = [np.dot(k, v) for k, v in zip(v_w, v_arr)]
-    # federated vector u as shared projection feature vector
-    u = np.sum(B, axis=0)
+def get_dis_time(args, data_value, clients_data_list):
+    '''
+        Step 1: Get Global Maximum Eigenvector By Using the Non-split Dataset
+    '''
+    global_eigs_list, global_eigv_list = [], []
+    for i, iter_num in enumerate(args.iter_list):
+        data_value = data_value[:, :int(data_value.shape[-1]/args.p_list[i])*args.p_list[i]] # ignore mismatch
+        global_eigs, global_eigv = local_power_iteration(args, data_value, iter_num=iter_num, com_time=0, warm_start=None) 
+        global_eigv_list.append(global_eigv)
+        global_eigs_list.append(global_eigs)
 
-    return u
+    '''
+        Step 2: Multi-shot Federated Learning with VFedAKPCA
+    '''
+    fed_dis_list, fed_time_list = [], []
+    for p_idx in range(len(args.p_list)):
+        dis_p_list, time_p_list = [], [] # [[dis_1, dis_2, dis_3, ..., dis_c], ...], c=communication period
+        d_list = clients_data_list[p_idx] # [d1, d2, ...d_p], d_p=[n, fea_num]
+        p_num = args.p_list[p_idx]
+        ep_list, vp_list = [], []
 
-def pac_federated_ws(centers_list, k=10):
-    res_centers_list = []
-    for centers in centers_list:
-        res_list, a_list, V_list, final_list = [], [], [], []
-        for d in centers:
-            a, V, final = pca(d, k)
-            a_list.append(a)
-            V_list.append(V)
-            final_list.append(final)
-        for i in range(k):
-            res = federated_ws([a[:, i] for a in a_list], [v[:, i] for v in V_list])
-            res_list.append(res)
-        res_centers_list.append(res_list) #[[res1, res2,..., res_k], ...]
+        # start multi-shot federated learning
+        start_time = time.time()
+        
+        if args.warm_start:
+            print("Warning: you are using Local Power Iteration with Warm Start!")
+        fed_u = None
+        for cp in range(args.period_num+1):
+            # get the eigenvalue and eigenvector for each client d
+            for i in range(p_num):
+                ep, vp = local_power_iteration(args, d_list[i], iter_num=args.iter_list[p_idx], \
+                                        com_time=cp, warm_start=fed_u)
+                ep_list.append(ep)
+                vp_list.append(vp)
 
+            if cp == 0:
+                print("Warning: isolate period!")
+                isolate_u = isolate(ep_list, vp_list)
+                dis_p = squared_dis(global_eigv_list[p_idx], isolate_u)
+                dis_p_list.append(dis_p)
+                time_p_list.append(0)
+                continue
 
-def federated_ws(a_arr, v_arr):
-    # the weight of each client based on eigenvalue
-    v_w = a_arr / np.sum(a_arr)
-    # re-weight the importance of each client's eigenvector (v_w * v_arr)
-    B = [v*k for k, v in zip(v_w, v_arr)]
-    # federated vector u as shared projection feature vector
-    u = np.sum(B, axis=0)
+            # federated vector
+            fed_u = federated(ep_list, vp_list, args.weight_scale) # weight scale method
 
-    return u
+            # the global vector (from non-split dataset) and federated vector distance
+            dis_p = squared_dis(global_eigv_list[p_idx], fed_u)
+            dis_p_list.append(dis_p)
+            
+            # update local dataset for each clients
+            rs_fed_u = np.expand_dims(fed_u, axis=-1)
+            for i in range(p_num):
+                # way 1
+                mid_up = d_list[i].T.dot(rs_fed_u)
+                up_item = mid_up.dot(mid_up.T) 
+                up_item_norm = up_item / (np.linalg.norm(up_item)+1e-9)
+                d_list[i] = d_list[i].dot(up_item_norm)
 
-def pca(data, k=10):
-    a, V, finaldata = [], [], []
+                # way 2
+                # up_item = rs_fed_u.dot(rs_fed_u.T)
+                # up_item_norm = up_item / np.linalg.norm(up_item)
+                # d_list[i] = up_item_norm.dot(d_list[i])
+            
+            time_p_list.append(time.time() - start_time)
 
-    scaled_x = data - np.mean(data, axis=0)
-    data_adjust = np.abs(scaled_x.T)
+        fed_dis_list.append(dis_p_list)
+        fed_time_list.append(time_p_list)
 
-    cov_mat = np.cov(scaled_x)
-    eig_vals, eig_vecs = np.linalg.eig(cov_mat)
-    index = np.argsort(-eig_vals) # decrease
+    return fed_dis_list, fed_time_list
 
-    selectVal=np.matrix(eig_vals.T[index[:k]]) # top_k
-    a = np.array(selectVal)
+# Calculate the distance error between 
+# vfed and global eigenvectors (square)
+def squared_dis(a, b, r=2.0):
+    d = sum(((a[i] - b[i]) ** r) for i in range(len(a))) ** (1.0/r)
 
-    selectVec = np.matrix(eig_vecs.T[index[:k]])
-    V = np.abs(np.array(selectVec))
-
-    finaldata = data_adjust.dot(V.T)
-    return a, V, finaldata
-
-# Local power iteration processing or with warm start v to get eigenvalue and eigenvector
-def max_eigen(A, iter_num=100, v=None, first=None):
-    mat_cov = np.cov(A)
-    max_eigs = mat_maxeigs(mat_cov)
-    max_eigv = power_iteration(mat_cov, iter_num, v, first)
-    
-    return max_eigs, max_eigv
-
-# Calculate the largest eigenvalue of the matrix -> eigenvalue
-def mat_maxeigs(mat):
-    [eigs, vecs] = np.linalg.eig(mat)
-    abs_eigs = list(abs(eigs))
-    max_id = abs_eigs.index(max(abs_eigs))
-    # print('Largest eigenvalue of matrix: ', eigs[max_id])
-
-    return eigs[max_id]
-
-# Local power iteration algorithm -> eigenvector
-def power_iteration(A, num_simu, v=None, first=None):
-    # start with a random vector then iteratively compute 
-    b_k = np.random.rand(A.shape[1]) if not first else v
-    for _ in range(num_simu):
-        # calculate the data matrix multiply eigenvector (A*b_k)
-        a_bk = np.dot(A, b_k)
-        # re normalize the vector
-        b_k = a_bk / np.linalg.norm(a_bk)
-
-    return b_k
-
-# Calculate the distance error between two eigenvector (square)
-def squared(a, b):
-    d = 0
-    for i in range(len(a)):
-        d += math.pow((a[i] - b[i]), 2) / (a[i] + b[i])
+    # d = 0
+    # for i in range(len(a)):
+    #     d += math.pow((a[i] - b[i]), 2) / (a[i] + b[i])
 
     return d
 
-def get_dis_time(max_eigv_list, d_list, p_list, centers_list, iter_num_list):
-    err_list, time_list = [], []
-    for p_index in range(len(p_list)):
-        centers_p = centers_list[p_index]
-        num_list = len(centers_list[p_index][0])
-        err_p_list = []
-        time_p_list = []
-        for i in range(len(centers_p)):
-            start_time = time.time()
-            
-            # get the eigenvalue and eigenvector for each d
-            ep, vp = max_eigen(d_list[i], iter_num=iter_num_list[p_index])
+# Federated algorithm
+def federated(ep_list, vp_list, weight_scale):
+    # the weight of each client based on eigenvalue
+    v_w = ep_list / np.sum(ep_list)
+    if weight_scale:
+        print("Warning: you are using weight scaling method!")
+        eta = np.mean(v_w) #
+        en_num = len(ep_list) // 2 # the number of enhance clients
+        idx = np.argsort(-v_w) # descending sort
+        print("Before: ", v_w) 
+        for i in idx[:en_num]:
+            v_w[i] = (1+eta)*v_w[i]
+        for j in idx[en_num:]:
+            v_w[j] = (1-eta)*v_w[j]
+        print("After: ", v_w)
 
-            ep_arr, vp_arr = [], []
-            for j in range(num_list):
-                # get the eigenvalue and eigenvector of each period
-                e_item, v_item = max_eigen(centers_p[i][j], iter_num=iter_num_list[0])
-                ep_arr.append(e_item)
-                vp_arr.append(v_item)
-            # the federated vector
-            rdp = federated(ep_arr, vp_arr)
+    # re-weight the importance of each client's eigenvector (v_w * v_arr)
+    B = [np.dot(k, v) for k, v in zip(v_w, vp_list)]
+    # federated vector u as shared projection feature vector
+    u = np.sum(B, axis=0)
 
-            #compare the unsplited vector and federated vector error
-            err_p = squared(vp, rdp)
-            err_p_list.append(err_p)
+    return u
 
-            #calculate the time consuming
-            time_p_list.append(time.time() - start_time)
+# isolate algorithm
+def isolate(ep_list, vp_list):
+    ep_avg = [1.0 for i in range(len(ep_list))]
+    # the weight of each client based on eigenvalue
+    v_w = ep_avg / np.sum(ep_avg)
+    B = [np.dot(k, v) for k, v in zip(v_w, vp_list)]
+    # federated vector u as shared projection feature vector
+    u = np.sum(B, axis=0)
 
-        # compare the whole dataset vector error and time consuming
-        start_time = time.time()
-        err_arr_list = [squared(vp_arr[i], max_eigv_list[p_index]) for i in range(num_list)]
-        avg_err_arr = (np.sum(err_arr_list)) / num_list
-        time_arr = time.time() - start_time
+    return u
+
+# Local power iteration processing or with warm start v 
+def local_power_iteration(args, X, iter_num, com_time, warm_start):
+    A = np.cov(X)
+    # start with a random vector or warm start v
+    judge_use = com_time not in [0, 1] and args.warm_start
+    b_k = warm_start if judge_use else np.random.rand(A.shape[0])
+
+    for _ in range(iter_num):
+        # eigenvector
+        a_bk = np.dot(A, b_k) 
+        b_k = a_bk / (np.linalg.norm(a_bk)+1e-9) #
         
-        # error and time array
-        err_p_list.insert(0, avg_err_arr)
-        time_p_list.insert(0, time_arr)
+        # eigenvalue
+        e_k = np.dot(A, b_k.T).dot(b_k) / np.dot(b_k.T, b_k)
 
-        err_list.append(err_p_list)
-        time_list.append(time_p_list)
-
-    return err_list, time_list
-
-def get_dis_ws(d_list, p_list, centers_list, inter_num=5):
-    def get_res(centers, last_res=None, first=None):
-        e_list, v_list = [], []
-        for center_d in centers:
-            e, v = max_eigen(center_d, iter_num=100, v=last_res, first=first)
-            e_list.append(e)
-            v_list.append(v)
-        res_u = federated(e_list, v_list)
-
-        return res_u
-
-    err_list = []
-    for p_index in range(len(p_list)):
-        err_p_list = []
-        for centers, d in zip(centers_list, d_list):
-            ge, gv = max_eigen(d)
-            last_res, first = None, False
-            for i in range(inter_num):
-                res_i = get_res(centers, last_res, first)
-                last_res = res_i
-                first = True
-            err_p_center = squared(gv, last_res)
-            err_p_list.append(err_p_center)
-        
-        err_list.append(err_p_list)
-
-    return err_list
+    return e_k, b_k

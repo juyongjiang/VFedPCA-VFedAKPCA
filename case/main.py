@@ -18,11 +18,13 @@ from skimage.transform import resize
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_path', type=str, default='../dataset/Image/Face/Face_1')
+
     parser.add_argument('--client_num', type=int, default=8)
     parser.add_argument('--iterations', type=int, default=100)
-    parser.add_argument('--re_size', type=int, default=64)
-    parser.add_argument('--n_clusters', type=int, default=8)
+    parser.add_argument('--re_size', type=int, default=100)
     parser.add_argument('--kernel', type=str, default='sigmoid')
+
+    parser.add_argument('--n_clusters', type=int, default=10)
 
     parser.add_argument('--kpca', action='store_true', default=False, help='decide use Kernel PCA Method')
     parser.add_argument('--wo_ws', action='store_true', default=False, help='decide not use weight scaling method in federated communication')
@@ -50,7 +52,7 @@ if __name__ == '__main__':
 
     # obtain the whole dataset eigenvalue and eigenvector
     f = np.asarray(resarr_list) # [img_num, w*h]
-    max_eigs_f, max_eigv_f = model.max_eigen(f, args.iterations)
+    max_eigs_f, max_eigv_f = model.power_iteration(f, args.iterations)
 
     # vertically partition dataset 
     d_list = utils.get_split_data(f, args.client_num) # each clients with [img_num, w*h/client_num]
@@ -79,15 +81,15 @@ if __name__ == '__main__':
         print('The shape of vfed_pca: ', vfed_pca.shape)
         print('The shape of is_pca: ', is_pca.shape)
 
-        # draw each sub figure
+        # draw each pca-sub figure
         utils.draw_subfig(us_pca, 'us_pca_' + data_name, args.re_size, args.show)
         utils.draw_subfig(vfed_pca, 'vfed_pca_' + data_name, args.re_size, args.show)
         utils.draw_subfig(is_pca, 'is_pca_' + data_name, args.re_size, args.show)
 
         # draw each cluster figure
-        # utils.draw_cluster(args.n_clusters, us_pca, 'us_pca_cluster_' + data_name, args.re_size, args.show)
-        # utils.draw_cluster(args.n_clusters, vfed_pca, 'vfed_pca_cluster_' + data_name, args.re_size, args.show)
-        # utils.draw_cluster(args.n_clusters, is_pca, 'is_pca_cluster_' + data_name, args.re_size, args.show)
+        utils.draw_cluster(args.n_clusters, us_pca, 'us_pca_cluster_' + data_name, args.re_size, args.show)
+        utils.draw_cluster(args.n_clusters, vfed_pca, 'vfed_pca_cluster_' + data_name, args.re_size, args.show)
+        utils.draw_cluster(args.n_clusters, is_pca, 'is_pca_cluster_' + data_name, args.re_size, args.show)
     
     r'''###################################
                     VFedAKPCA 
@@ -115,7 +117,7 @@ if __name__ == '__main__':
     print('The shape of vfedak_pca: ', vfedak_pca.shape)
     print('The shape of is_vfedak_pca: ', is_vfedak_pca.shape)
 
-    # draw each sub-figure
+    # draw each akpca/kpca-sub-figure
     utils.draw_subfig(us_vfedak_pca, 'us_vfedak_pca_'  + data_name, args.re_size, args.show)
     utils.draw_subfig(vfedak_pca, 'vfedak_pca_' + data_name, args.re_size, args.show)
     utils.draw_subfig(is_vfedak_pca, 'is_vfedak_pca_' + data_name, args.re_size, args.show)

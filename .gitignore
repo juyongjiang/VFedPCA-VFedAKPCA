@@ -1,5 +1,3 @@
-dataset/*
+dataset/
 *__pycache__
-*figs
-swarm-tgca
-synethetic
+csv_convert.py
