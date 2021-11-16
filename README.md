@@ -81,7 +81,7 @@ $ python main.py --synthetic / # start use synthetic dataset
 The example is as follows. More details command usage can be check by `python main.py --help`. 
 
 ```bash
-$ cd case                    # change into case folder
+$ cd case # change into case folder
 $ python main.py --data_path '../dataset/Image/DeepLesion' /
                  --client_num 8 / 
                  --iterations 100 / 
