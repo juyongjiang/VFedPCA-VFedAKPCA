@@ -68,8 +68,15 @@ $ python main.py --data_path './dataset/College.csv' /
                  --period_num 10 /
                  --sample_num 777 # use the whole by default
 ```
+### B. Experiment on Synethetic Dataset
+The example is as follows. More details command usage can be check by `python main.py --help`. 
 
-### B. Case Studies
+```bash
+$ python main.py --pattern mixture / # or single
+                 --shape [20000, 4000] # M features x N samples
+```
+
+### C. Case Studies
 The example is as follows. More details command usage can be check by `python main.py --help`. 
 
 ```bash
