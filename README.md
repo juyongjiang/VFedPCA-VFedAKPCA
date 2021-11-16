@@ -81,6 +81,14 @@ $ python main.py --data_path '../dataset/Image/DeepLesion' /
                  --kernel sigmoid
 ```
 # Demo Visualization
+The experimental result on structured datasets (GlaucomaM), the distance error after multiple communication has been significantly reduced and converge compared with the un-communicated situation at 0-th period. 
+
+<p align="center">
+  <img src="figs/GlaucomaM.png" alt="Server-Clients Architecture" width="600">
+  <br>
+  <b>Figure 2.</b> The results of algorithm PCA(a)/AKPCA(b) on the un-splitted data, VFedPCA(a)/VFedAKPCA(b) on the isolated data, VFedAvgPCA(a)/VFedAvgAKPCA(b) (Without Weight Scaling Method) on the isolated data, PCA(a)/AKPCA(b) on the isolated data (from top to bottom).
+</p>
+
 Here is some of our case studies comparative experiment results on six image datasets: YaleFace (center-light and surprised), CasiaGait (sequence 1 and sequence 10), DeepLesion and CUHK03 (from left to right). 
 
 <p align="center">
