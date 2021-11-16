@@ -72,7 +72,8 @@ $ python main.py --data_path './dataset/College.csv' /
 The example is as follows. More details command usage can be check by `python main.py --help`. 
 
 ```bash
-$ python main.py --pattern mixture / # or single
+$ python main.py --synthetic / # start use synthetic dataset
+                 --pattern mixture / # or single
                  --shape [20000, 4000] # M features x N samples
 ```
 
