@@ -62,10 +62,10 @@ We conduct extensive experiments on structured datasets to exmaines the effect o
 The example is as follows. More details command usage can be check by `python main.py --help`. 
 
 ```bash
-$ python main.py --data_path './dataset/College.csv'\
-                 --p_list [3, 5, 10] \
-                 --iter_list [10, 10, 10] \
-                 --period_num 10 \
+$ python main.py --data_path './dataset/College.csv' /
+                 --p_list [3, 5, 10] /
+                 --iter_list [10, 10, 10] /
+                 --period_num 10 /
                  --sample_num 777 # use the whole by default
 ```
 
