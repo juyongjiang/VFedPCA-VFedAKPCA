@@ -124,7 +124,8 @@ Furthermore, we investigate three types of decentralized topologies in Vertical 
 ```
 @inproceedings{
 title = {{Vertical Federated Principal Component Analysis and Its Kernel Extension on Feature-wise Distributed Data}},
-author = {Yiu-ming Cheung, Fellow, IEEE, Feng Yu, Juyong Jiang, and Jian Lou},
+author = {Yiu-ming Cheung, Fellow, IEEE, Juyong Jiang, Feng Yu, and Jian Lou},
+journal = {arXiv preprint arXiv:2203.01752}
 year = 2021
 }
 ```
