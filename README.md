@@ -1,7 +1,19 @@
-# VFedPCA+VFedAKPCA
-This is the official source code for the Paper: **Vertical Federated Principal Component Analysis and Its Kernel Extension on Feature-wise Distributed Data** based on Python. 
+# VFedPCA+VFedAKPCA: Vertical Federated Principal Component Analysis and Its Kernel Extension on Feature-wise Distributed Data
+This is the official source code for the Paper: **[Vertical Federated Principal Component Analysis and Its Kernel Extension on Feature-wise Distributed Data](https://arxiv.org/abs/2203.01752)**. 
 
-> Despite enormous research interest and rapid application of federated learning (FL) to various areas, existing studies mostly focus on supervised federated learning under the horizontally partitioned local dataset setting. This paper will study the unsupervised FL under the vertically partitioned dataset setting.
+## Citation
+Please cite our paper if you use the code:
+```bibtex
+@article{cheung2022vertical,
+  title={Vertical Federated Principal Component Analysis and Its Kernel Extension on Feature-wise Distributed Data},
+  author={Cheung, Yiu-ming and Jiang, Juyong and Yu, Feng and Lou, Jian},
+  journal={arXiv preprint arXiv:2203.01752},
+  year={2022}
+}
+```
+
+## Paper Abstract
+Despite enormous research interest and rapid application of federated learning (FL) to various areas, existing studies mostly focus on supervised federated learning under the horizontally partitioned local dataset setting. This paper will study the unsupervised FL under the vertically partitioned dataset setting. Accordingly, we propose the federated principal component analysis for vertically partitioned dataset (VFedPCA) method, which reduces the dimensionality across the joint datasets over all the clients and extracts the principal component feature information for downstream data analysis. We further take advantage of the nonlinear dimensionality reduction and propose the vertical federated advanced kernel principal component analysis (VFedAKPCA) method, which can effectively and collaboratively model the nonlinear nature existing in many real datasets. In addition, we study two communication topologies. The first is a server-client topology where a semi-trusted server coordinates the federated training, while the second is the fully-decentralized topology which further eliminates the requirement of the server by allowing clients themselves to communicate with their neighbors. Extensive experiments conducted on five types of real-world datasets corroborate the efficacy of VFedPCA and VFedAKPCA under the vertically partitioned FL setting. 
 
 ## Server-Clients Architecture
 <p align="center">
@@ -119,13 +131,3 @@ Furthermore, we investigate three types of decentralized topologies in Vertical 
   <br>
   <b>Figure 5.</b> The results of VFedPCA with the central coordination server, fully decentralized, ring decentralized, and start decentralized, from top to bottom respectively, on the isolated data from each clients. 
 </p>
-
-## Citation
-```
-@inproceedings{
-title = {{Vertical Federated Principal Component Analysis and Its Kernel Extension on Feature-wise Distributed Data}},
-author = {Yiu-ming Cheung, Fellow, IEEE, Juyong Jiang, Feng Yu, and Jian Lou},
-journal = {arXiv preprint arXiv:2203.01752}
-year = 2021
-}
-```
