@@ -1,8 +1,7 @@
 # VFedPCA+VFedAKPCA: Vertical Federated Principal Component Analysis and Its Kernel Extension on Feature-wise Distributed Data
 This is the official source code for the Paper: **[Vertical Federated Principal Component Analysis and Its Kernel Extension on Feature-wise Distributed Data](https://arxiv.org/abs/2203.01752)**. 
 
-## Citation
-Please cite our paper if you use the code:
+Please cite our paper if you find our code or paper useful:
 ```bibtex
 @article{cheung2022vertical,
   title={Vertical Federated Principal Component Analysis and Its Kernel Extension on Feature-wise Distributed Data},
